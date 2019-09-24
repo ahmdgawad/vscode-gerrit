@@ -19,7 +19,24 @@
 				"command": "extension.helloWorld",
 				"title": "Hello World"
 			}
-		]
+		],
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "Gerrit",
+					"title": "Gerrit",
+					"icon": "resources/gerrit.svg"
+				}
+			]
+		},
+		"views": {
+			"Gerrit": [
+				{
+					"id": "gerritCodeReview",
+					"name": "Code Review"
+				}
+			]
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
