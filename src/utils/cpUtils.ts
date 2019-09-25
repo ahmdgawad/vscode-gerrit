@@ -2,7 +2,7 @@
  * @Author: liupei 
  * @Date: 2019-09-24 21:41:43 
  * @Last Modified by: liupei
- * @Last Modified time: 2019-09-24 22:23:18
+ * @Last Modified time: 2019-09-25 10:37:03
  */
 
 import * as vscode from 'vscode';
@@ -14,7 +14,7 @@ interface IExecError extends Error {
     result?: string;
 }
 
-export const executeCommand = async (command: string, args: string[], options: cp.SpawnOptions = { shell: true }): Promise<string> => {
+export async function executeCommand(command: string, args: string[], options: cp.SpawnOptions = { shell: true }): Promise<string> {
     return new Promise((resolve: (res: string) => void, reject: (e: Error) => void): void => {
         let result: string = '';
 
@@ -47,7 +47,7 @@ export const executeCommand = async (command: string, args: string[], options: c
     });
 }
 
-export const createEnvOption = (): {} => {
+export function createEnvOption(): {} {
     const proxy: string | undefined = getHttpAgent();
     if (proxy) {
         const env = Object.create(process.env);
@@ -57,6 +57,6 @@ export const createEnvOption = (): {} => {
     return process.env;
 }
 
-export const getHttpAgent = (): string | undefined => {
+export function getHttpAgent(): string | undefined {
     return vscode.workspace.getConfiguration('http').get<string>('proxy');
 }

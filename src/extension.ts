@@ -2,7 +2,7 @@
  * @Author: liupei 
  * @Date: 2019-09-24 15:00:07 
  * @Last Modified by: liupei
- * @Last Modified time: 2019-09-24 22:52:22
+ * @Last Modified time: 2019-09-25 10:38:45
  */
 
 import * as vscode from 'vscode';
@@ -26,13 +26,11 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 				
 			vscode.window.showInputBox(options).then(value => {
 				if (value === undefined || value.trim() === '') {
-					console.log(111);
 					promptForOpenOutputChannel("Extension initialization failed. Please open output channel for details.", DialogType.ERROR);
 				} else {
 					const cityName = value.trim();
 					axios.get(`https://way.jd.com/he/freeweather?city=${cityName}&amp;appkey=xxxxxxxx`)
 					.then(rep => {
-						console.log(rep);
 						if (rep.data.code !== '10000') {
 							vscode.window.showInformationMessage('Sorry, Please try again.');
 							return;

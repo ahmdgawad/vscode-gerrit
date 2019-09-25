@@ -2,7 +2,7 @@
  * @Author: liupei 
  * @Date: 2019-09-24 20:26:38 
  * @Last Modified by: liupei
- * @Last Modified time: 2019-09-24 22:41:12
+ * @Last Modified time: 2019-09-25 10:37:19
  */
 
 import * as vscode from 'vscode';
@@ -22,7 +22,7 @@ export enum DialogType {
     WARNING = 'warning',
 }
 
-export const promptForOpenOutputChannel = async (message: string, type: DialogType) => {
+export async function promptForOpenOutputChannel(message: string, type: DialogType) {
     let result: vscode.MessageItem | undefined;
 
     switch (type) {
@@ -44,6 +44,6 @@ export const promptForOpenOutputChannel = async (message: string, type: DialogTy
     }
 }
 
-export const openUrl = async (url: string): Promise<void> => {
+export async function openUrl(url: string): Promise<void> {
     vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(url));
 }
