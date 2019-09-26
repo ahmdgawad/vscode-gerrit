@@ -2,21 +2,36 @@
  * @Author: liupei 
  * @Date: 2019-09-24 15:00:07 
  * @Last Modified by: liupei
- * @Last Modified time: 2019-09-25 10:38:45
+ * @Last Modified time: 2019-09-26 20:39:39
  */
 
 import * as vscode from 'vscode';
 import axios from 'axios';
 
 import { gerritChannel } from './gerritChannel';
+import { gerritManager } from './gerritManager';
 import { gerritExecutor } from './gerritExecutor';
 import { DialogType, promptForOpenOutputChannel } from './utils/uiUtils';
+import { getGerritAccount, getXsrfToken } from './utils/httpUtils';
+import { gerritStatusBarController } from './statusbar/gerritStatusBarController';
 
 export async function activate(context: vscode.ExtensionContext): Promise<void> {
 	try {
 		if (!await gerritExecutor.meetRequirements()) {
 			throw new Error('The environment dosen');
 		}
+		const cookie = await getGerritAccount({
+			username: 'liupei01',
+			password: '',
+		});
+		console.log(cookie);
+		const token = await getXsrfToken(cookie);
+		console.log(token);
+
+		gerritManager.on('statusChanged', () => {
+			gerritStatusBarController.updateStatusBar(gerritManager.getStatus(), gerritManager.getUsername());
+		});
+
 		let cityAqi = vscode.commands.registerCommand('extension.sayCityAqi', function () {
 			const options = {
 				ignoreFocusOut: true,
@@ -45,6 +60,8 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 				}
 			});
 		});
+
+		await gerritManager.getLoginStatus();
 			
 		context.subscriptions.push(cityAqi);
 	} catch (error) {

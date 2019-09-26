@@ -2,7 +2,7 @@
  * @Author: liupei 
  * @Date: 2019-09-24 20:59:24 
  * @Last Modified by: liupei
- * @Last Modified time: 2019-09-25 10:32:45
+ * @Last Modified time: 2019-09-26 19:23:40
  */
 
 import * as cp from 'child_process';
@@ -10,6 +10,7 @@ import * as path from 'path';
 import * as fse from 'fs-extra';
 import * as vscode from 'vscode';
 
+import { Account } from './shared';
 import { usingCmd } from './utils/osUtils';
 import { executeCommand } from './utils/cpUtils';
 import { useWsl, toWslPath } from './utils/wslUtils';
@@ -67,6 +68,13 @@ class GerritExecutor implements vscode.Disposable {
         }
 
         return true;
+    }
+
+    public async getUserInfo(): Promise<Account> {
+        return {
+            username: 'liupei01',
+            password: 'Lp19970127',
+        };
     }
 
     public dispose(): void {
