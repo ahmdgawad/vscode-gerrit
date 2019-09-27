@@ -2,41 +2,42 @@
  * @Author: liupei 
  * @Date: 2019-09-26 14:33:24 
  * @Last Modified by: liupei
- * @Last Modified time: 2019-09-26 20:28:31
+ * @Last Modified time: 2019-09-27 20:26:51
  */
 
 import * as vscode from 'vscode';
 import * as cp from 'child_process';
 import { EventEmitter } from 'events';
 
-import { UserStatus, Account } from './shared';
+import { UserStatus, UserDetail } from './shared';
 import { gerritExecutor } from './gerritExecutor';
 
 class GerritManager extends EventEmitter {
-    private currentUser: Account;
+    private user: UserDetail;
     private userStatus: UserStatus;
 
     constructor() {
         super();
-        this.currentUser = this.setNullUser();
+        this.user = this.setNullUser();
         this.userStatus = UserStatus.SignedOut;
     }
 
     public async getLoginStatus(): Promise<void> {
         try {
-            const result: Account = await gerritExecutor.getUserInfo();
+            this.user = await gerritExecutor.getUserInfo();
+            this.userStatus = UserStatus.SignedIn;
         } catch (error) {
-            this.currentUser = this.setNullUser();
+            this.user = this.setNullUser();
             this.userStatus = UserStatus.SignedOut;
         } finally {
             this.emit('statusChanged');
         }
     }
 
-    public setNullUser(): Account {
+    public setNullUser(): UserDetail {
         return {
-            username: undefined,
-            password: undefined,
+            email: 'Unknown',
+            username: 'Unknown',
         };
     }
 
@@ -44,8 +45,8 @@ class GerritManager extends EventEmitter {
         return this.userStatus;
     }
 
-    public getUsername(): string | undefined {
-        return this.currentUser.username;
+    public getUserName(): string | undefined {
+        return this.user.username;
     }
 
     public async signIn(): Promise<void> {
@@ -67,7 +68,6 @@ class GerritManager extends EventEmitter {
                 if (!pwd) {
                     return resolve(undefined);
                 }
-                // const 
             });
         } catch (error) {
 

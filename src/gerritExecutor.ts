@@ -2,7 +2,7 @@
  * @Author: liupei 
  * @Date: 2019-09-24 20:59:24 
  * @Last Modified by: liupei
- * @Last Modified time: 2019-09-26 19:23:40
+ * @Last Modified time: 2019-09-27 20:22:24
  */
 
 import * as cp from 'child_process';
@@ -10,17 +10,23 @@ import * as path from 'path';
 import * as fse from 'fs-extra';
 import * as vscode from 'vscode';
 
-import { Account } from './shared';
+import { account } from './account';
+import { Account, UserDetail, HttpResponse, Change } from './shared';
 import { usingCmd } from './utils/osUtils';
 import { executeCommand } from './utils/cpUtils';
 import { useWsl, toWslPath } from './utils/wslUtils';
 import { DialogOptions, openUrl } from './utils/uiUtils';
+import { getGerritAccount, getXsrfToken, getUserDetail, getChanges } from './utils/httpUtils';
 
 const NORMAL_NODE_EXECUTABLE = 'node';
 
 class GerritExecutor implements vscode.Disposable {
     private configurationChangeListener: vscode.Disposable;
     private nodeExecutable: string;
+
+    private account: Account = account;
+    private gerritAccount: string | null = null;
+    private XGerritAuth: string | null = null;
 
     constructor() {
         this.nodeExecutable = this.getNodePath();
@@ -29,6 +35,14 @@ class GerritExecutor implements vscode.Disposable {
                 this.nodeExecutable = this.getNodePath();
             }
         });
+        this.onInit();
+    }
+
+    async onInit() {
+        this.gerritAccount = await getGerritAccount(this.account);
+		if (this.gerritAccount) {
+			this.XGerritAuth = await getXsrfToken(this.gerritAccount);
+        }
     }
 
     private getNodePath(): string {
@@ -70,11 +84,27 @@ class GerritExecutor implements vscode.Disposable {
         return true;
     }
 
-    public async getUserInfo(): Promise<Account> {
-        return {
-            username: 'liupei01',
-            password: 'Lp19970127',
-        };
+    public async getUserInfo(): Promise<UserDetail> {
+        return this.fetch(getUserDetail);
+    }
+
+    public async getChanges(): Promise<Change[][]> {
+        return this.fetch(getChanges);
+    }
+
+    public async fetch(api: Function, data?: any) {
+        if (!this.gerritAccount || !this.XGerritAuth) {
+            await this.onInit();
+        }
+
+        return api({
+            headers: {
+                cookie: this.gerritAccount,
+                'X-Gerrit-Auth': this.XGerritAuth,
+            },
+            data,
+        }).then((resp: HttpResponse) => JSON.parse(resp.data.slice(4)))
+        .catch((error: Error) => error);
     }
 
     public dispose(): void {

@@ -11,19 +11,15 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onView:gerritCodeReview",
-		"onCommand:extension.sayCityAqi"
+		"onCommand:gerrit.signin",
+		"onView:gerritCodeReview"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "extension.helloWorld",
-				"title": "Hello World"
-			},
-			{
-				"command": "extension.sayCityAqi",
-				"title": "Say CityAqi"
+				"command": "gerrit.signin",
+				"title": "Sign In"
 			}
 		],
 		"viewsContainers": {

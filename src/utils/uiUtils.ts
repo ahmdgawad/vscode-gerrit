@@ -2,10 +2,12 @@
  * @Author: liupei 
  * @Date: 2019-09-24 20:26:38 
  * @Last Modified by: liupei
- * @Last Modified time: 2019-09-25 10:37:19
+ * @Last Modified time: 2019-09-27 19:04:46
  */
 
 import * as vscode from 'vscode';
+
+import { DialogType } from '../shared';
 import { gerritChannel } from '../gerritChannel';
 
 export namespace DialogOptions {
@@ -15,13 +17,6 @@ export namespace DialogOptions {
     export const never: vscode.MessageItem = { title: 'Never'};
     export const singUp: vscode.MessageItem = { title: 'Sign uo'};
 }
-
-export enum DialogType {
-    INFO = 'info',
-    ERROR = 'error',
-    WARNING = 'warning',
-}
-
 export async function promptForOpenOutputChannel(message: string, type: DialogType) {
     let result: vscode.MessageItem | undefined;
 
