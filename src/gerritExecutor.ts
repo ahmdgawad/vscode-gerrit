@@ -40,10 +40,7 @@ class GerritExecutor implements vscode.Disposable {
     }
 
     async onInit() {
-        this.gerritAccount = await getGerritAccount({
-            username: 'liupei01',
-            password: 'Lp19970127',
-        } || this.account);
+        this.gerritAccount = await getGerritAccount(this.account);
 		if (this.gerritAccount) {
 			this.XGerritAuth = await getXsrfToken(this.gerritAccount);
         }
