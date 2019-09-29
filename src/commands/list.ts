@@ -2,7 +2,7 @@
  * @Author: liupei 
  * @Date: 2019-09-27 18:59:22 
  * @Last Modified by: liupei
- * @Last Modified time: 2019-09-27 19:39:20
+ * @Last Modified time: 2019-09-29 15:14:10
  */
 
 import * as vscode from 'vscode';
@@ -18,7 +18,7 @@ export async function listChanges(): Promise<Change[][]> {
         if (gerritManager.getStatus() === UserStatus.SignedOut) {
             return NULL_RESULT;
         }
-        const changes = await gerritExecutor.getChanges(); 
+        const changes = await gerritExecutor.getChanges();
         return changes;
     } catch (error) {
         await promptForOpenOutputChannel("Failed to list problems. Please open the output channel for details.", DialogType.ERROR);

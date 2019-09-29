@@ -2,7 +2,7 @@
  * @Author: liupei 
  * @Date: 2019-09-27 17:28:34 
  * @Last Modified by: liupei
- * @Last Modified time: 2019-09-27 20:05:53
+ * @Last Modified time: 2019-09-29 17:29:40
  */
 
 import * as vscode from 'vscode';
@@ -22,13 +22,16 @@ class ExplorerNodeManager implements vscode.Disposable {
         for (const index in changes) {
             switch(index) {
                 case '0':
-                    return this.setExplorerNodeMap(this.outgoingReviewsExplorerNodeMap, changes[index]);
+                    this.setExplorerNodeMap(this.outgoingReviewsExplorerNodeMap, changes[index]);
+                    break;
                 case '1':
-                    return this.setExplorerNodeMap(this.incomingReviewsExplorerNodeMap, changes[index]);
+                    this.setExplorerNodeMap(this.incomingReviewsExplorerNodeMap, changes[index]);
+                    break;
                 case '2':
-                    return this.setExplorerNodeMap(this.recentlyClosedExplorerNodeMap, changes[index]);
+                    this.setExplorerNodeMap(this.recentlyClosedExplorerNodeMap, changes[index]);
+                    break;
                 default:
-                    return;
+                    break;
             }
         }
     }
@@ -37,20 +40,28 @@ class ExplorerNodeManager implements vscode.Disposable {
         return [
             new GerritNode(Object.assign({}, DEFAULT_CHANGE, {
                 type: CATEGORY.OUTGOING_REVIEWS,
-                subject: 'Outgoing reviews',
+                subject: CATEGORY.OUTGOING_REVIEWS,
             }), false),
             new GerritNode(Object.assign({}, DEFAULT_CHANGE, {
                 type: CATEGORY.INCOMING_REVIEWS,
-                subject: 'Incoming reviews',
+                subject: CATEGORY.INCOMING_REVIEWS,
             }), false),
             new GerritNode(Object.assign({}, DEFAULT_CHANGE, {
                 type: CATEGORY.RECENTLY_CLOSED,
-                subject: 'Recently closed',
+                subject: CATEGORY.RECENTLY_CLOSED,
             }), false),
         ];
     }
 
-    public getAllNodes(): GerritNode[] {
+    public getOutgoingReviewsNodes(): GerritNode[] {
+        return Array.from(this.outgoingReviewsExplorerNodeMap.values());
+    }
+
+    public getIncomingReviewsNodes(): GerritNode[] {
+        return Array.from(this.incomingReviewsExplorerNodeMap.values());
+    }
+
+    public getRecentlyClosedNodes(): GerritNode[] {
         return Array.from(this.recentlyClosedExplorerNodeMap.values());
     }
 

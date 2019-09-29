@@ -2,7 +2,7 @@
  * @Author: liupei 
  * @Date: 2019-09-26 14:36:12 
  * @Last Modified by: liupei
- * @Last Modified time: 2019-09-27 19:04:37
+ * @Last Modified time: 2019-09-29 17:30:26
  */
 
 // 登录信息
@@ -39,6 +39,14 @@ export interface UserDetail {
     ];
 }
 
+export interface ChangeLabels {
+    ['Code-Review']: {
+        ['value']?: number;
+        ['approved']?: any;
+        ['recommended']?: any;
+    };
+}
+
 // 一次提交的描述
 export interface Change {
     id: string;
@@ -57,6 +65,7 @@ export interface Change {
     deletions: number;
     hashtags: string[];
     owner: UserDetail;
+    labels: ChangeLabels;
 }
 
 // 默认选项
@@ -75,6 +84,9 @@ export const DEFAULT_CHANGE = {
     insertions: 0,
     deletions: 0,
     hashtags: [],
+    labels: {
+        'Code-Review': {}
+    },
     owner: {
         email: 'Unknown',
         username: 'Unknown',
@@ -83,9 +95,20 @@ export const DEFAULT_CHANGE = {
 
 // 列表类别
 export const CATEGORY = {
-    OUTGOING_REVIEWS: 'OUTGOING_REVIEWS',
-    INCOMING_REVIEWS: 'INCOMING_REVIEWS',
-    RECENTLY_CLOSED: 'RECENTLY_CLOSED',
+    OUTGOING_REVIEWS: 'OUTGOING REVIEWS',
+    INCOMING_REVIEWS: 'INCOMING REVIEWS',
+    RECENTLY_CLOSED: 'RECENTLY CLOSED',
+};
+
+export const CHANGE_STATUS = {
+    '0': 0,
+    '+1': 1,
+    '+2': 2,
+    '-1': -1,
+    '-2': -2,
+    NEW: 'NEW',
+    MERGED: 'MERGED',
+    ABANDONED: 'ABANDONED',
 };
 
 // 请求参数配置

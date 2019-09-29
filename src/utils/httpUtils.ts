@@ -2,7 +2,7 @@
  * @Author: liupei 
  * @Date: 2019-09-26 14:43:13 
  * @Last Modified by: liupei
- * @Last Modified time: 2019-09-29 12:21:21
+ * @Last Modified time: 2019-09-29 16:04:43
  */
 
 import axios from 'axios';
@@ -51,7 +51,8 @@ export async function getChanges(requestConfig: RequestConfig) {
     return axios({
         url: `/changes/?q=is:open+owner:self
             &q=is:open+reviewer:self+-owner:self
-            &q=is:closed+(owner:self+OR+reviewer:self)+-age:4w+limit:10`,
+            &q=is:closed+(owner:self+OR+reviewer:self)+-age:4w+limit:10
+            &O=881`,
         method: 'GET',
         headers,
         data

@@ -8,7 +8,7 @@
 import * as vscode from 'vscode';
 
 
-import { Change, UserDetail } from '../shared';
+import { Change, ChangeLabels, UserDetail } from '../shared';
 
 export class GerritNode {
     constructor(private data: Change, private isChangeNode: boolean = true, private isFileNode: boolean = false) {}
@@ -39,6 +39,10 @@ export class GerritNode {
 
     public get subject(): string {
         return this.data.subject;
+    }
+
+    public get labels(): ChangeLabels {
+        return this.data.labels;
     }
 
     public get mergeable(): boolean {
