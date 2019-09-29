@@ -2,7 +2,7 @@
  * @Author: liupei 
  * @Date: 2019-09-24 15:00:07 
  * @Last Modified by: liupei
- * @Last Modified time: 2019-09-27 20:21:25
+ * @Last Modified time: 2019-09-29 12:13:41
  */
 
 import * as vscode from 'vscode';
@@ -36,6 +36,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 			explorerNodeManager,
 			vscode.window.createTreeView("gerritCodeReview", { treeDataProvider: gerritTreeDataprovider, showCollapseAll: true }),
 			vscode.commands.registerCommand('gerrit.signin', () => gerritManager.signIn()),
+			vscode.commands.registerCommand('gerrit.signout', () => gerritManager.signOut()),
 		);
 
 		await gerritManager.getLoginStatus();

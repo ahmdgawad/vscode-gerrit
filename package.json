@@ -12,6 +12,7 @@
 	],
 	"activationEvents": [
 		"onCommand:gerrit.signin",
+		"onCommand:gerrit.signout",
 		"onView:gerritCodeReview"
 	],
 	"main": "./out/extension.js",
@@ -20,7 +21,16 @@
 			{
 				"command": "gerrit.signin",
 				"title": "Sign In"
-			}
+			},
+			{
+                "command": "gerrit.signout",
+                "title": "Sign out",
+                "category": "gerritCodeReview",
+                "icon": {
+                    "light": "resources/signout.svg",
+                    "dark": "resources/signout.svg"
+                }
+            }
 		],
 		"viewsContainers": {
 			"activitybar": [
@@ -37,6 +47,15 @@
 					"id": "gerritCodeReview",
 					"name": "Code Review"
 				}
+			]
+		},
+		"menus": {
+			"view/title": [
+				{
+                    "command": "gerrit.signout",
+                    "when": "view == gerritCodeReview",
+                    "group": "navigation@0"
+                }
 			]
 		}
 	},

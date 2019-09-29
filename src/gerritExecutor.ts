@@ -2,7 +2,7 @@
  * @Author: liupei 
  * @Date: 2019-09-24 20:59:24 
  * @Last Modified by: liupei
- * @Last Modified time: 2019-09-27 20:22:24
+ * @Last Modified time: 2019-09-29 14:18:40
  */
 
 import * as cp from 'child_process';
@@ -10,12 +10,10 @@ import * as path from 'path';
 import * as fse from 'fs-extra';
 import * as vscode from 'vscode';
 
-import { account } from './account';
-import { Account, UserDetail, HttpResponse, Change } from './shared';
-import { usingCmd } from './utils/osUtils';
 import { executeCommand } from './utils/cpUtils';
 import { useWsl, toWslPath } from './utils/wslUtils';
 import { DialogOptions, openUrl } from './utils/uiUtils';
+import { Account, UserDetail, HttpResponse, Change } from './shared';
 import { getGerritAccount, getXsrfToken, getUserDetail, getChanges } from './utils/httpUtils';
 
 const NORMAL_NODE_EXECUTABLE = 'node';
@@ -24,9 +22,12 @@ class GerritExecutor implements vscode.Disposable {
     private configurationChangeListener: vscode.Disposable;
     private nodeExecutable: string;
 
-    private account: Account = account;
-    private gerritAccount: string | null = null;
-    private XGerritAuth: string | null = null;
+    public gerritAccount: string | null = null;
+    public XGerritAuth: string | null = null;
+    public account: Account = {
+        username: '',
+        password: '',
+    };
 
     constructor() {
         this.nodeExecutable = this.getNodePath();
@@ -103,8 +104,7 @@ class GerritExecutor implements vscode.Disposable {
                 'X-Gerrit-Auth': this.XGerritAuth,
             },
             data,
-        }).then((resp: HttpResponse) => JSON.parse(resp.data.slice(4)))
-        .catch((error: Error) => error);
+        }).then((resp: HttpResponse) => JSON.parse(resp.data.slice(4)));
     }
 
     public dispose(): void {

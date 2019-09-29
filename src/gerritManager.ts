@@ -2,15 +2,16 @@
  * @Author: liupei 
  * @Date: 2019-09-26 14:33:24 
  * @Last Modified by: liupei
- * @Last Modified time: 2019-09-27 20:26:51
+ * @Last Modified time: 2019-09-29 14:48:06
  */
 
 import * as vscode from 'vscode';
-import * as cp from 'child_process';
 import { EventEmitter } from 'events';
 
-import { UserStatus, UserDetail } from './shared';
+import { gerritChannel } from './gerritChannel';
 import { gerritExecutor } from './gerritExecutor';
+import { UserStatus, UserDetail, DialogType, Account } from './shared';
+import { promptForOpenOutputChannel, DialogOptions } from './utils/uiUtils';
 
 class GerritManager extends EventEmitter {
     private user: UserDetail;
@@ -22,13 +23,16 @@ class GerritManager extends EventEmitter {
         this.userStatus = UserStatus.SignedOut;
     }
 
-    public async getLoginStatus(): Promise<void> {
+    public async getLoginStatus(): Promise<boolean> {
         try {
             this.user = await gerritExecutor.getUserInfo();
             this.userStatus = UserStatus.SignedIn;
+            return true;
         } catch (error) {
             this.user = this.setNullUser();
             this.userStatus = UserStatus.SignedOut;
+            gerritChannel.appendLine(error.toString());
+            return false;
         } finally {
             this.emit('statusChanged');
         }
@@ -51,7 +55,7 @@ class GerritManager extends EventEmitter {
 
     public async signIn(): Promise<void> {
         try {
-            const userName: string | undefined = await new Promise(async (resolve: (res: string | undefined) => void, reject: (e: Error) => void): Promise<void> => {
+            const account: Account | undefined = await new Promise(async (resolve: (res: Account | undefined) => void): Promise<void> => {
                 const name: string | undefined = await vscode.window.showInputBox({
                     prompt: "Enter username.",
                     validateInput: (s: string): string | undefined => s && s.trim() ? undefined : "The input must not be empty",
@@ -68,12 +72,47 @@ class GerritManager extends EventEmitter {
                 if (!pwd) {
                     return resolve(undefined);
                 }
-            });
-        } catch (error) {
+                
+                gerritExecutor.account = {
+                    username: name,
+                    password: pwd,
+                };
 
+                return resolve(gerritExecutor.account);
+            });
+
+            if (account) {
+                const result = await this.getLoginStatus();
+                if (result) {
+                    vscode.window.showInformationMessage('Successfully signed in.');
+                } else {
+                    throw new Error('Failed to sign in.');
+                }
+            }
+        } catch (error) {
+            promptForOpenOutputChannel('Failed to sign in. Please open the output  channel for details', DialogType.ERROR);
         }
     }
 
+    public async  signOut() {
+        if (this.user.username === 'Unknown') {
+            return vscode.window.showWarningMessage('Please sign in first.');
+        }
+
+        const result = await vscode.window.showWarningMessage('Are you sure to exit?', DialogOptions.yes, DialogOptions.no);
+        if (result === DialogOptions.yes) {
+            gerritExecutor.gerritAccount = null;
+            gerritExecutor.XGerritAuth = null;
+    
+            this.user = this.setNullUser();
+            this.userStatus = UserStatus.SignedOut;
+
+            setTimeout(() => {
+                this.emit('statusChanged');
+                vscode.window.showInformationMessage('Successfully signed out.');
+            }, 1 * 1000);
+        }
+    }
 }
 
 export const gerritManager: GerritManager = new GerritManager();
