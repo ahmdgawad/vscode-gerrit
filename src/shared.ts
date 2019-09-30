@@ -17,6 +17,12 @@ export enum UserStatus {
     SignedOut = 2,
 }
 
+// 状态栏信息分类
+export enum StatusInfoType {
+    Status = 1,
+    ChangeInfo = 2,
+}
+
 // 提示类型
 export enum DialogType {
     INFO = 'info',
@@ -42,6 +48,7 @@ export interface UserDetail {
 export interface ChangeLabels {
     ['Code-Review']: {
         ['value']?: number;
+        ['rejected']?: any;
         ['approved']?: any;
         ['recommended']?: any;
     };
@@ -66,6 +73,14 @@ export interface Change {
     hashtags: string[];
     owner: UserDetail;
     labels: ChangeLabels;
+}
+
+// 提交的修订版本
+export interface Revision {
+    ref: string;
+    _number: number;
+    created: string;
+    uploader: UserDetail;
 }
 
 // 默认选项
@@ -110,6 +125,12 @@ export const CHANGE_STATUS = {
     MERGED: 'MERGED',
     ABANDONED: 'ABANDONED',
 };
+
+export interface StatusBarInfo {
+    type: number;
+    name?: string;
+    info?:  string; 
+}
 
 // 请求参数配置
 export interface RequestConfig {

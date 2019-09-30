@@ -8,7 +8,7 @@
 import * as vscode from 'vscode';
 
 import { GerritNode } from './gerritNode';
-import { listChanges } from '../commands/list';
+import { listChanges, listFiles } from '../commands/list';
 import { DEFAULT_CHANGE, CATEGORY, Change } from '../shared';
 
 class ExplorerNodeManager implements vscode.Disposable {
@@ -63,6 +63,14 @@ class ExplorerNodeManager implements vscode.Disposable {
 
     public getRecentlyClosedNodes(): GerritNode[] {
         return Array.from(this.recentlyClosedExplorerNodeMap.values());
+    }
+
+    public async getChangeDetail(element: GerritNode): Promise<GerritNode[]> {
+        const files = await listFiles(element);
+
+        return files.map(file => new GerritNode(Object.assign({}, DEFAULT_CHANGE, {
+            subject: file,
+        }), false, true));
     }
 
     private setExplorerNodeMap(map: Map<string, GerritNode>, list: Change[]) {

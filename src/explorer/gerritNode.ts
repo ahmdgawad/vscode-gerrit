@@ -7,7 +7,6 @@
 
 import * as vscode from 'vscode';
 
-
 import { Change, ChangeLabels, UserDetail } from '../shared';
 
 export class GerritNode {
@@ -82,12 +81,12 @@ export class GerritNode {
     }
 
     public get createTime(): string {
-        const date = new Date(this.data.created);
+        const date = new Date(new Date(this.data.created).getTime() + 8 * 60 * 60 * 1000);
         return this.getTime(date);
     }
 
     public get updateTime(): string {
-        const date = new Date(this.data.updated);
+        const date = new Date(new Date(this.data.updated).getTime() + 8 * 60 * 60 * 1000);
         return this.getTime(date);
     }
 

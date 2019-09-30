@@ -7,19 +7,25 @@
 
 import * as vscode from 'vscode';
 
-import { UserStatus } from '../shared';
+import { UserStatus, StatusInfoType, StatusBarInfo } from '../shared';
 
 export class GerritStatusBarItem implements vscode.Disposable {
     private readonly statusBarItem: vscode.StatusBarItem;
+    private readonly type: StatusInfoType;
 
-    constructor() {
+    constructor(type: StatusInfoType) {
         this.statusBarItem = vscode.window.createStatusBarItem();
+        this.type = type;
     }
 
-    public updateStatesBar(status: UserStatus, name?: string): void {
+    public updateStatusBar(status: UserStatus, data?: string): void {
         switch (status) {
             case UserStatus.SignedIn:
-                this.statusBarItem.text = `Gerrit: ${name}`;
+                this.statusBarItem.text = (this.type === StatusInfoType.Status)
+                    ? `Gerrit: ${data}`
+                    : (this.type === StatusInfoType.ChangeInfo)
+                    ? `${data}`
+                    : ``;
                 break;
             case UserStatus.SignedOut:
             default:

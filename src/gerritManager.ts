@@ -57,17 +57,17 @@ class GerritManager extends EventEmitter {
         try {
             const account: Account | undefined = await new Promise(async (resolve: (res: Account | undefined) => void): Promise<void> => {
                 const name: string | undefined = await vscode.window.showInputBox({
-                    prompt: "Enter username.",
-                    validateInput: (s: string): string | undefined => s && s.trim() ? undefined : "The input must not be empty",
+                    prompt: 'Enter username.',
+                    validateInput: (s: string): string | undefined => s && s.trim() ? undefined : 'The input must not be empty',
                 });
                 if (!name) {
                     return resolve(undefined);
                 }
 
                 const pwd: string | undefined = await vscode.window.showInputBox({
-                    prompt: "Enter password.",
+                    prompt: 'Enter password.',
                     password: true,
-                    validateInput: (s: string): string | undefined => s ? undefined : "Password must not be empty",
+                    validateInput: (s: string): string | undefined => s ? undefined : 'Password must not be empty',
                 });
                 if (!pwd) {
                     return resolve(undefined);
@@ -90,7 +90,7 @@ class GerritManager extends EventEmitter {
                 }
             }
         } catch (error) {
-            promptForOpenOutputChannel('Failed to sign in. Please open the output  channel for details', DialogType.ERROR);
+            promptForOpenOutputChannel('Failed to sign in. Please open the output  channel for details', DialogType.ERROR, error);
         }
     }
 

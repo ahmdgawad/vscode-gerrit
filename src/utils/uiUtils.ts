@@ -18,7 +18,7 @@ export namespace DialogOptions {
     export const singUp: vscode.MessageItem = { title: 'Sign uo'};
 }
 
-export async function promptForOpenOutputChannel(message: string, type: DialogType) {
+export async function promptForOpenOutputChannel(message: string, type: DialogType, info?: any) {
     let result: vscode.MessageItem | undefined;
 
     switch (type) {
@@ -33,6 +33,10 @@ export async function promptForOpenOutputChannel(message: string, type: DialogTy
             break;
         default:
             break;
+    }
+
+    if (info) {
+        gerritChannel.appendLine(info.toString());
     }
 
     if (result === DialogOptions.open) {

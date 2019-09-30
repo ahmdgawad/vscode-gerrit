@@ -5,16 +5,16 @@
  * @Last Modified time: 2019-09-29 17:01:45
  */
 
-import * as cp from 'child_process';
-import * as path from 'path';
 import * as fse from 'fs-extra';
 import * as vscode from 'vscode';
+import * as cp from 'child_process';
 
+import * as http from './utils/httpUtils';
 import { executeCommand } from './utils/cpUtils';
+import { GerritNode } from './explorer/gerritNode';
 import { useWsl, toWslPath } from './utils/wslUtils';
 import { DialogOptions, openUrl } from './utils/uiUtils';
 import { Account, UserDetail, HttpResponse, Change } from './shared';
-import { getGerritAccount, getXsrfToken, getUserDetail, getChanges } from './utils/httpUtils';
 
 const NORMAL_NODE_EXECUTABLE = 'node';
 
@@ -40,9 +40,9 @@ class GerritExecutor implements vscode.Disposable {
     }
 
     async onInit() {
-        this.gerritAccount = await getGerritAccount(this.account);
+        this.gerritAccount = await http.getGerritAccount(this.account);
 		if (this.gerritAccount) {
-			this.XGerritAuth = await getXsrfToken(this.gerritAccount);
+			this.XGerritAuth = await http.getXsrfToken(this.gerritAccount);
         }
     }
 
@@ -86,11 +86,22 @@ class GerritExecutor implements vscode.Disposable {
     }
 
     public async getUserInfo(): Promise<UserDetail> {
-        return this.fetch(getUserDetail);
+        return this.fetch(http.getUserDetail);
     }
 
     public async getChanges(): Promise<Change[][]> {
-        return this.fetch(getChanges);
+        return this.fetch(http.getChanges);
+    }
+
+    public async getCurrentRevision(element: GerritNode): Promise<string> {
+        return this.fetch(http.getCurrentRevision, { id: element.id }).then(resp => resp.current_revision);
+    }
+
+    public async getCurrentRevisionFiles(element: GerritNode, revision: string): Promise<string[]> {
+        return this.fetch(http.getCurrentRevisionFiles, {
+            id: element.id,
+            revision: revision,
+        }).then(resp => Object.keys(resp));
     }
 
     public async fetch(api: Function, data?: any) {

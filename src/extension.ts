@@ -34,14 +34,13 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 			gerritChannel,
 			gerritExecutor,
 			explorerNodeManager,
-			vscode.window.createTreeView("gerritCodeReview", { treeDataProvider: gerritTreeDataprovider, showCollapseAll: true }),
+			vscode.window.createTreeView('gerritCodeReview', { treeDataProvider: gerritTreeDataprovider, showCollapseAll: true }),
 			vscode.commands.registerCommand('gerrit.signin', () => gerritManager.signIn()),
 			vscode.commands.registerCommand('gerrit.signout', () => gerritManager.signOut()),
 		);
 
 		await gerritManager.getLoginStatus();
 	} catch (error) {
-		gerritChannel.appendLine(error.toString());
-        promptForOpenOutputChannel("Extension initialization failed. Please open output channel for details.", DialogType.ERROR);
+        promptForOpenOutputChannel('Extension initialization failed. Please open output channel for details.', DialogType.ERROR, error);
 	}
 }

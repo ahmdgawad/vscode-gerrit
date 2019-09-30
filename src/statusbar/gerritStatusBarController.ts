@@ -7,15 +7,17 @@
 
 import * as vscode from 'vscode';
 
-import { UserStatus } from '../shared';
+import { UserStatus, StatusInfoType } from '../shared';
 import { GerritStatusBarItem } from './GerritStatusBarItem';
 
 class GerritStatusBarController implements vscode.Disposable {
     private statusBar: GerritStatusBarItem;
+    private changeInfoBar: GerritStatusBarItem;
     private configurationChangeListener: vscode.Disposable;
 
     constructor() {
-        this.statusBar = new GerritStatusBarItem();
+        this.statusBar = new GerritStatusBarItem(StatusInfoType.Status);
+        this.changeInfoBar = new GerritStatusBarItem(StatusInfoType.ChangeInfo);
         this.setStatusBarVisibility();
         this.configurationChangeListener = vscode.workspace.onDidChangeConfiguration((event: vscode.ConfigurationChangeEvent) => {
             if (event.affectsConfiguration('gerrit.enableStatusBar')) {
@@ -27,22 +29,29 @@ class GerritStatusBarController implements vscode.Disposable {
     private setStatusBarVisibility(): void {
         if (this.isStatusBarEnabled()) {
             this.statusBar.show();
+            this.changeInfoBar.show();
         } else {
             this.statusBar.hide();
+            this.changeInfoBar.hide();
         }
     }
 
     private isStatusBarEnabled(): boolean {
         const configuration: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration();
-        return configuration.get<boolean>('leetcode.enableStatusBar', true);
+        return configuration.get<boolean>('gerrit.enableStatusBar', true);
     }
 
     public updateStatusBar(status: UserStatus, name?: string): void {
-        this.statusBar.updateStatesBar(status, name);
+        this.statusBar.updateStatusBar(status, name);
+    }
+
+    public updateChangeInfo(status: UserStatus, info?: string): void {
+        this.changeInfoBar.updateStatusBar(status, info);
     }
 
     public dispose(): void {
         this.statusBar.dispose();
+        this.changeInfoBar.dispose();
         this.configurationChangeListener.dispose();
     }
 }

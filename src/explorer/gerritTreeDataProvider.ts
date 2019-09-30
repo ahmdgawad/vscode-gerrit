@@ -40,12 +40,15 @@ export class GerritTreeDataprovider implements vscode.TreeDataProvider<GerritNod
             };
         }
 
-        const title = this.getSubCategoryTitle(element);
+        const subCategoryInfo = this.getSubCategoryInfo(element);
         return {
-            label: title,
-            tooltip: title,
+            label: subCategoryInfo.subject,
+            description: subCategoryInfo.description,
             iconPath: this.getSubCategoryIcon(element),
             command: element.isFile ? element.previewCommand : undefined,
+            tooltip: !element.isChange
+                ? subCategoryInfo.subject
+                : `owner:   ${element.owner.name}\nsubject: ${element.subject}\nproject:  ${element.project}\nbranch:  ${element.branch}`,
             collapsibleState: element.isFile
                 ? vscode.TreeItemCollapsibleState.None
                 : element.isChange
@@ -54,7 +57,7 @@ export class GerritTreeDataprovider implements vscode.TreeDataProvider<GerritNod
         };
     }
 
-    public getChildren(element?: GerritNode | undefined): vscode.ProviderResult<GerritNode[]> {
+    public async getChildren(element?: GerritNode | undefined) {
         if (gerritManager.getUserName() === 'Unknown') {
             return [
                 new GerritNode(Object.assign({}, DEFAULT_CHANGE, {
@@ -66,7 +69,7 @@ export class GerritTreeDataprovider implements vscode.TreeDataProvider<GerritNod
 
         if (!element) {
             return explorerNodeManager.getRootNodes();
-        } else {
+        } else if (!element.isChange && !element.isFile) {
             switch(element.type) {
                 case CATEGORY.OUTGOING_REVIEWS:
                     return explorerNodeManager.getOutgoingReviewsNodes();
@@ -77,21 +80,30 @@ export class GerritTreeDataprovider implements vscode.TreeDataProvider<GerritNod
                 default:
                     return [];
             }
+        } else if (element.isChange) {
+            return await explorerNodeManager.getChangeDetail(element);
         }
     }
 
-    private getSubCategoryTitle(element: GerritNode) {
+    private getSubCategoryInfo(element: GerritNode) {
         if (!element.isChange && !element.isFile) {
-            return element.subject;
+            return {
+                subject: element.subject,
+            };
         } else if(element.isChange) {
-            return `(${element.owner.name}) [${element.subject}] (${element.project}/${element.branch}) (Updated: ${element.updateTime})`
+            return {
+                subject: `(${element.owner.name}) [${element.subject}]`,
+                description: `(${element.project}/${element.branch}) (Updated: ${element.updateTime})`,
+            }
         }
         
-        return element.subject;
+        return {
+            subject: element.subject,
+        };
     }
 
     private getSubCategoryIcon(element: GerritNode) {
-        const codeReviewLabels = element.labels["Code-Review"]
+        const codeReviewLabels = element.labels['Code-Review']
         if (element.type) {
             switch(element.type) {
                 case CATEGORY.OUTGOING_REVIEWS:
@@ -109,20 +121,21 @@ export class GerritTreeDataprovider implements vscode.TreeDataProvider<GerritNod
             return this.getIconAbsolutePath('abandoned.svg');
         } else if (element.status === CHANGE_STATUS.NEW && codeReviewLabels.approved) {
             return this.getIconAbsolutePath('+2.svg');
+        } else if (element.status === CHANGE_STATUS.NEW && codeReviewLabels.rejected) {
+            return this.getIconAbsolutePath('-2.svg');
         } else if (codeReviewLabels.value) {
             switch(codeReviewLabels.value) {
-                case CHANGE_STATUS["+1"]:
+                case CHANGE_STATUS['+1']:
                     return this.getIconAbsolutePath('+1.svg');
-                case CHANGE_STATUS["-1"]:
+                case CHANGE_STATUS['-1']:
                     return this.getIconAbsolutePath('-1.svg');
-                case CHANGE_STATUS["-2"]:
-                    return this.getIconAbsolutePath('-2.svg');
                 default:
                     break;
             }
         } else if (element.status === CHANGE_STATUS.NEW) {
             return this.getIconAbsolutePath('new.svg'); 
         }
+        return this.getIconAbsolutePath('blank.png'); 
     }
 
     private getIconAbsolutePath(fileName: string) {

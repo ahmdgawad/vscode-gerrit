@@ -58,3 +58,25 @@ export async function getChanges(requestConfig: RequestConfig) {
         data
     });
 }
+
+export async function getCurrentRevision(requestConfig: RequestConfig) {
+    const { headers, data } = requestConfig;
+
+    return axios({
+        url: `/changes/${data.id}/detail?O=10004`,
+        method: 'GET',
+        headers,
+        data
+    });
+}
+
+export async function getCurrentRevisionFiles(requestConfig: RequestConfig) {
+    const { headers, data } = requestConfig;
+
+    return axios({
+        url: `/changes/${data.id}/revisions/${data.revision}/files`,
+        method: 'GET',
+        headers,
+        data
+    });
+}
