@@ -2,8 +2,11 @@
  * @Author: liupei
  * @Date: 2019-09-26 14:36:12
  * @Last Modified by: liupei
- * @Last Modified time: 2019-09-29 17:30:26
+ * @Last Modified time: 2019-10-11 18:02:04
  */
+
+import * as vscode from 'vscode';
+
 
 // 登录信息
 export interface Account {
@@ -21,6 +24,15 @@ export enum UserStatus {
 export enum StatusInfoType {
     Status = 1,
     ChangeInfo = 2,
+}
+
+// 弹窗选项配置
+export namespace DialogOptions {
+    export const no: vscode.MessageItem = { title: 'No', isCloseAffordance: true };
+    export const yes: vscode.MessageItem = { title: 'Yes' };
+    export const open: vscode.MessageItem = { title: 'Open' };
+    export const never: vscode.MessageItem = { title: 'Never' };
+    export const singUp: vscode.MessageItem = { title: 'Sign uo' };
 }
 
 // 提示类型
@@ -45,6 +57,7 @@ export interface UserDetail {
     ];
 }
 
+// 得分标记
 export interface ChangeLabels {
     ['Code-Review']: {
         ['value']?: number;
@@ -83,7 +96,7 @@ export interface Revision {
     uploader: UserDetail;
 }
 
-// 默认选项
+// change 默认选项
 export const DEFAULT_CHANGE = {
     id: '',
     type: '',
@@ -115,6 +128,7 @@ export const CATEGORY = {
     RECENTLY_CLOSED: 'RECENTLY CLOSED',
 };
 
+// change 状态
 export const CHANGE_STATUS = {
     '0': 0,
     '+1': 1,
@@ -126,6 +140,14 @@ export const CHANGE_STATUS = {
     ABANDONED: 'ABANDONED',
 };
 
+// webview 配置
+export interface GerritWebviewOption {
+    title: string;
+    preserveFocus?: boolean;
+    viewColumn: vscode.ViewColumn;
+}
+
+// 状态栏信息
 export interface StatusBarInfo {
     type: number;
     name?: string;

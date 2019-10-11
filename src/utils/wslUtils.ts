@@ -2,16 +2,17 @@
  * @Author: liupei
  * @Date: 2019-09-24 22:11:57
  * @Last Modified by: liupei
- * @Last Modified time: 2019-09-25 10:35:35
+ * @Last Modified time: 2019-10-11 18:27:12
  */
 
 import * as vscode from 'vscode';
 
 import { isWindows } from './osUtils';
 import { executeCommand } from './cpUtils';
+import { getWorkspaceConfiguration } from './settingUtils';
 
 export function useWsl(): boolean {
-    const gerritCodeConfig: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('gerrit');
+    const gerritCodeConfig: vscode.WorkspaceConfiguration = getWorkspaceConfiguration();
     return isWindows() && gerritCodeConfig.get<boolean>('useWsl') === true;
 }
 

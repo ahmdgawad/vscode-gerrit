@@ -2,7 +2,7 @@
  * @Author: liupei
  * @Date: 2019-09-24 20:59:24
  * @Last Modified by: liupei
- * @Last Modified time: 2019-09-29 17:01:45
+ * @Last Modified time: 2019-10-11 18:47:16
  */
 
 import * as fse from 'fs-extra';
@@ -10,11 +10,12 @@ import * as vscode from 'vscode';
 import * as cp from 'child_process';
 
 import * as http from './utils/httpUtils';
+import { openUrl } from './utils/uiUtils';
 import { executeCommand } from './utils/cpUtils';
 import { GerritNode } from './explorer/gerritNode';
 import { useWsl, toWslPath } from './utils/wslUtils';
-import { DialogOptions, openUrl } from './utils/uiUtils';
-import { Account, UserDetail, HttpResponse, Change } from './shared';
+import { getWorkspaceConfiguration } from './utils/settingUtils';
+import { Account, UserDetail, DialogOptions, HttpResponse, Change } from './shared';
 
 const NORMAL_NODE_EXECUTABLE = 'node';
 
@@ -47,7 +48,7 @@ class GerritExecutor implements vscode.Disposable {
     }
 
     private getNodePath(): string {
-        const extensionConfig: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration('gerrit', null);
+        const extensionConfig: vscode.WorkspaceConfiguration = getWorkspaceConfiguration();
         return extensionConfig.get<string>('nodePath', 'node');
     }
 

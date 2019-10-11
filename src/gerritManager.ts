@@ -2,7 +2,7 @@
  * @Author: liupei
  * @Date: 2019-09-26 14:33:24
  * @Last Modified by: liupei
- * @Last Modified time: 2019-09-29 14:48:06
+ * @Last Modified time: 2019-10-11 17:45:03
  */
 
 import * as vscode from 'vscode';
@@ -10,8 +10,8 @@ import { EventEmitter } from 'events';
 
 import { gerritChannel } from './gerritChannel';
 import { gerritExecutor } from './gerritExecutor';
-import { UserStatus, UserDetail, DialogType, Account } from './shared';
-import { promptForOpenOutputChannel, DialogOptions } from './utils/uiUtils';
+import { promptForOpenOutputChannel } from './utils/uiUtils';
+import { UserStatus, UserDetail, DialogType, DialogOptions, Account } from './shared';
 
 class GerritManager extends EventEmitter {
     private user: UserDetail;

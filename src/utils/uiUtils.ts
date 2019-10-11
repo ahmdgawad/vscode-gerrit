@@ -2,21 +2,14 @@
  * @Author: liupei
  * @Date: 2019-09-24 20:26:38
  * @Last Modified by: liupei
- * @Last Modified time: 2019-09-29 14:42:08
+ * @Last Modified time: 2019-10-11 18:40:59
  */
 
 import * as vscode from 'vscode';
 
-import { DialogType } from '../shared';
 import { gerritChannel } from '../gerritChannel';
-
-export namespace DialogOptions {
-    export const no: vscode.MessageItem = { title: 'No', isCloseAffordance: true };
-    export const yes: vscode.MessageItem = { title: 'Yes' };
-    export const open: vscode.MessageItem = { title: 'Open' };
-    export const never: vscode.MessageItem = { title: 'Never' };
-    export const singUp: vscode.MessageItem = { title: 'Sign uo' };
-}
+import { DialogType, DialogOptions } from '../shared';
+import { getWorkspaceConfiguration } from './settingUtils';
 
 export async function promptForOpenOutputChannel(message: string, type: DialogType, info?: any) {
     let result: vscode.MessageItem | undefined;
@@ -42,6 +35,31 @@ export async function promptForOpenOutputChannel(message: string, type: DialogTy
     if (result === DialogOptions.open) {
         gerritChannel.show();
     }
+}
+
+export async function promptHintMessage(config: string, message: string, choiceConfirm: string, onConfirm: () => Promise<any>): Promise<void> {
+    if (getWorkspaceConfiguration().get<boolean>(config)) {
+        const choiceNoShowAgain: string = `Don't show again`;
+        const choice: string | undefined = await vscode.window.showInformationMessage(
+            message,
+            choiceConfirm,
+            choiceNoShowAgain,
+        );
+        switch (choice) {
+            case choiceConfirm:
+                await onConfirm();
+                break;
+            case choiceNoShowAgain:
+                await getWorkspaceConfiguration().update(config, false, true);
+                break;
+            default:
+                break;
+        }
+    }
+}
+
+export async function openSettingsEditor(query?: string): Promise<void> {
+    await vscode.commands.executeCommand('workbench.action.openSettings', query);
 }
 
 export async function openUrl(url: string): Promise<void> {
