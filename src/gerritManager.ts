@@ -1,6 +1,6 @@
 /*
- * @Author: liupei 
- * @Date: 2019-09-26 14:33:24 
+ * @Author: liupei
+ * @Date: 2019-09-26 14:33:24
  * @Last Modified by: liupei
  * @Last Modified time: 2019-09-29 14:48:06
  */
@@ -72,7 +72,7 @@ class GerritManager extends EventEmitter {
                 if (!pwd) {
                     return resolve(undefined);
                 }
-                
+
                 gerritExecutor.account = {
                     username: name,
                     password: pwd,
@@ -94,7 +94,7 @@ class GerritManager extends EventEmitter {
         }
     }
 
-    public async  signOut() {
+    public async signOut() {
         if (this.user.username === 'Unknown') {
             return vscode.window.showWarningMessage('Please sign in first.');
         }
@@ -103,7 +103,7 @@ class GerritManager extends EventEmitter {
         if (result === DialogOptions.yes) {
             gerritExecutor.gerritAccount = null;
             gerritExecutor.XGerritAuth = null;
-    
+
             this.user = this.setNullUser();
             this.userStatus = UserStatus.SignedOut;
 

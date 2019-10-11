@@ -1,6 +1,6 @@
 /*
- * @Author: liupei 
- * @Date: 2019-09-26 14:36:12 
+ * @Author: liupei
+ * @Date: 2019-09-26 14:36:12
  * @Last Modified by: liupei
  * @Last Modified time: 2019-09-29 17:30:26
  */
@@ -129,7 +129,7 @@ export const CHANGE_STATUS = {
 export interface StatusBarInfo {
     type: number;
     name?: string;
-    info?:  string; 
+    info?: string;
 }
 
 // 请求参数配置

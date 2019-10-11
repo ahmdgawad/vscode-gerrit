@@ -1,6 +1,6 @@
 /*
- * @Author: liupei 
- * @Date: 2019-09-27 16:43:48 
+ * @Author: liupei
+ * @Date: 2019-09-27 16:43:48
  * @Last Modified by: liupei
  * @Last Modified time: 2019-09-29 17:34:11
  */
@@ -8,6 +8,7 @@
 import * as path from 'path';
 import * as vscode from 'vscode';
 
+import { sleep } from '../utils/osUtils';
 import { GerritNode } from './gerritNode';
 import { gerritManager } from '../gerritManager';
 import { explorerNodeManager } from './explorerNodeManager';
@@ -16,7 +17,7 @@ import { DEFAULT_CHANGE, CATEGORY, CHANGE_STATUS } from '../shared';
 export class GerritTreeDataprovider implements vscode.TreeDataProvider<GerritNode> {
     private context: vscode.ExtensionContext = {} as vscode.ExtensionContext;
     private onDidChangeTreeDataEvent: vscode.EventEmitter<GerritNode | undefined | null> = new vscode.EventEmitter<GerritNode | undefined | null>();
-    
+
     public readonly onDidChangeTreeData: vscode.Event<any> = this.onDidChangeTreeDataEvent.event;
 
     public initialize(context: vscode.ExtensionContext): void {
@@ -27,7 +28,7 @@ export class GerritTreeDataprovider implements vscode.TreeDataProvider<GerritNod
         await explorerNodeManager.refreshCache();
         this.onDidChangeTreeDataEvent.fire();
     }
-    
+
     public getTreeItem(element: GerritNode): vscode.TreeItem | Thenable<vscode.TreeItem> {
         if (element.type === 'notSignIn') {
             return {
@@ -52,25 +53,25 @@ export class GerritTreeDataprovider implements vscode.TreeDataProvider<GerritNod
             collapsibleState: element.isFile
                 ? vscode.TreeItemCollapsibleState.None
                 : element.isChange
-                ? vscode.TreeItemCollapsibleState.Collapsed
-                : vscode.TreeItemCollapsibleState.Expanded,
+                    ? vscode.TreeItemCollapsibleState.Collapsed
+                    : vscode.TreeItemCollapsibleState.Expanded,
         };
     }
 
     public async getChildren(element?: GerritNode | undefined) {
         if (gerritManager.getUserName() === 'Unknown') {
-            return [
+            return await sleep([
                 new GerritNode(Object.assign({}, DEFAULT_CHANGE, {
                     type: 'notSignIn',
                     subject: 'Sign in to Gerrit',
                 }), false),
-            ];
+            ]);
         }
 
         if (!element) {
-            return explorerNodeManager.getRootNodes();
+            return await sleep(explorerNodeManager.getRootNodes());
         } else if (!element.isChange && !element.isFile) {
-            switch(element.type) {
+            switch (element.type) {
                 case CATEGORY.OUTGOING_REVIEWS:
                     return explorerNodeManager.getOutgoingReviewsNodes();
                 case CATEGORY.INCOMING_REVIEWS:
@@ -90,13 +91,13 @@ export class GerritTreeDataprovider implements vscode.TreeDataProvider<GerritNod
             return {
                 subject: element.subject,
             };
-        } else if(element.isChange) {
+        } else if (element.isChange) {
             return {
                 subject: `(${element.owner.name}) [${element.subject}]`,
                 description: `(${element.project}/${element.branch}) (Updated: ${element.updateTime})`,
             }
         }
-        
+
         return {
             subject: element.subject,
         };
@@ -105,7 +106,7 @@ export class GerritTreeDataprovider implements vscode.TreeDataProvider<GerritNod
     private getSubCategoryIcon(element: GerritNode) {
         const codeReviewLabels = element.labels['Code-Review']
         if (element.type) {
-            switch(element.type) {
+            switch (element.type) {
                 case CATEGORY.OUTGOING_REVIEWS:
                     return this.getIconAbsolutePath('outgoing.svg');
                 case CATEGORY.INCOMING_REVIEWS:
@@ -124,7 +125,7 @@ export class GerritTreeDataprovider implements vscode.TreeDataProvider<GerritNod
         } else if (element.status === CHANGE_STATUS.NEW && codeReviewLabels.rejected) {
             return this.getIconAbsolutePath('-2.svg');
         } else if (codeReviewLabels.value) {
-            switch(codeReviewLabels.value) {
+            switch (codeReviewLabels.value) {
                 case CHANGE_STATUS['+1']:
                     return this.getIconAbsolutePath('+1.svg');
                 case CHANGE_STATUS['-1']:
@@ -133,9 +134,9 @@ export class GerritTreeDataprovider implements vscode.TreeDataProvider<GerritNod
                     break;
             }
         } else if (element.status === CHANGE_STATUS.NEW) {
-            return this.getIconAbsolutePath('new.svg'); 
+            return this.getIconAbsolutePath('new.svg');
         }
-        return this.getIconAbsolutePath('blank.png'); 
+        return this.getIconAbsolutePath('blank.png');
     }
 
     private getIconAbsolutePath(fileName: string) {

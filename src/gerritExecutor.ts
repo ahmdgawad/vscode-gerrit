@@ -1,6 +1,6 @@
 /*
- * @Author: liupei 
- * @Date: 2019-09-24 20:59:24 
+ * @Author: liupei
+ * @Date: 2019-09-24 20:59:24
  * @Last Modified by: liupei
  * @Last Modified time: 2019-09-29 17:01:45
  */
@@ -41,8 +41,8 @@ class GerritExecutor implements vscode.Disposable {
 
     async onInit() {
         this.gerritAccount = await http.getGerritAccount(this.account);
-		if (this.gerritAccount) {
-			this.XGerritAuth = await http.getXsrfToken(this.gerritAccount);
+        if (this.gerritAccount) {
+            this.XGerritAuth = await http.getXsrfToken(this.gerritAccount);
         }
     }
 

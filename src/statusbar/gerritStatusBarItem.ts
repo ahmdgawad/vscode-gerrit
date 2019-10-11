@@ -1,6 +1,6 @@
 /*
- * @Author: liupei 
- * @Date: 2019-09-26 20:04:49 
+ * @Author: liupei
+ * @Date: 2019-09-26 20:04:49
  * @Last Modified by: liupei
  * @Last Modified time: 2019-09-26 20:32:16
  */
@@ -24,8 +24,8 @@ export class GerritStatusBarItem implements vscode.Disposable {
                 this.statusBarItem.text = (this.type === StatusInfoType.Status)
                     ? `Gerrit: ${data}`
                     : (this.type === StatusInfoType.ChangeInfo)
-                    ? `${data}`
-                    : ``;
+                        ? `${data}`
+                        : ``;
                 break;
             case UserStatus.SignedOut:
             default:

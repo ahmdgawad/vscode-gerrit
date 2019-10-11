@@ -1,6 +1,6 @@
 /*
- * @Author: liupei 
- * @Date: 2019-09-27 17:28:34 
+ * @Author: liupei
+ * @Date: 2019-09-27 17:28:34
  * @Last Modified by: liupei
  * @Last Modified time: 2019-09-29 17:29:40
  */
@@ -20,7 +20,7 @@ class ExplorerNodeManager implements vscode.Disposable {
         this.dispose();
         const changes = await listChanges();
         for (const index in changes) {
-            switch(index) {
+            switch (index) {
                 case '0':
                     this.setExplorerNodeMap(this.outgoingReviewsExplorerNodeMap, changes[index]);
                     break;
@@ -36,7 +36,7 @@ class ExplorerNodeManager implements vscode.Disposable {
         }
     }
 
-    public getRootNodes(): GerritNode[] {
+    public async getRootNodes(): Promise<GerritNode[]> {
         return [
             new GerritNode(Object.assign({}, DEFAULT_CHANGE, {
                 type: CATEGORY.OUTGOING_REVIEWS,

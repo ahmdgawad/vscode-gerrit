@@ -1,6 +1,6 @@
 /*
- * @Author: liupei 
- * @Date: 2019-09-27 16:46:34 
+ * @Author: liupei
+ * @Date: 2019-09-27 16:46:34
  * @Last Modified by: liupei
  * @Last Modified time: 2019-09-27 20:26:13
  */
@@ -10,7 +10,7 @@ import * as vscode from 'vscode';
 import { Change, ChangeLabels, UserDetail } from '../shared';
 
 export class GerritNode {
-    constructor(private data: Change, private isChangeNode: boolean = true, private isFileNode: boolean = false) {}
+    constructor(private data: Change, private isChangeNode: boolean = true, private isFileNode: boolean = false) { }
 
     public get id(): number {
         return this.data._number;

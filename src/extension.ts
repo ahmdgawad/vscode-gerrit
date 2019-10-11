@@ -1,6 +1,6 @@
 /*
- * @Author: liupei 
- * @Date: 2019-09-24 15:00:07 
+ * @Author: liupei
+ * @Date: 2019-09-24 15:00:07
  * @Last Modified by: liupei
  * @Last Modified time: 2019-09-29 12:13:41
  */
@@ -41,6 +41,6 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 
 		await gerritManager.getLoginStatus();
 	} catch (error) {
-        promptForOpenOutputChannel('Extension initialization failed. Please open output channel for details.', DialogType.ERROR, error);
+		promptForOpenOutputChannel('Extension initialization failed. Please open output channel for details.', DialogType.ERROR, error);
 	}
 }
