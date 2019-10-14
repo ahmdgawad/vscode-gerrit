@@ -136,7 +136,7 @@ export class GerritTreeDataprovider implements vscode.TreeDataProvider<GerritNod
         } else if (element.status === CHANGE_STATUS.NEW) {
             return this.getIconAbsolutePath('new.svg');
         }
-        return this.getIconAbsolutePath('blank.png');
+        return this.getIconAbsolutePath('document.svg');
     }
 
     private getIconAbsolutePath(fileName: string) {
