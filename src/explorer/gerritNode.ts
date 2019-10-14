@@ -60,6 +60,14 @@ export class GerritNode {
         return this.data.deletions;
     }
 
+    public get revisions(): string[] {
+        return this.data.revisions;
+    }
+
+    public get currentRevision(): string {
+        return this.data.currentRevision;
+    }
+
     public get owner(): UserDetail {
         return this.data.owner;
     }

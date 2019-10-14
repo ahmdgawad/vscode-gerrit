@@ -84,16 +84,10 @@ export interface Change {
     insertions: number;
     deletions: number;
     hashtags: string[];
+    revisions: string[];
+    currentRevision: string;
     owner: UserDetail;
     labels: ChangeLabels;
-}
-
-// 提交的修订版本
-export interface Revision {
-    ref: string;
-    _number: number;
-    created: string;
-    uploader: UserDetail;
 }
 
 // change 默认选项
@@ -112,6 +106,8 @@ export const DEFAULT_CHANGE = {
     insertions: 0,
     deletions: 0,
     hashtags: [],
+    revisions: [],
+    currentRevision: '',
     labels: {
         'Code-Review': {}
     },
@@ -120,6 +116,26 @@ export const DEFAULT_CHANGE = {
         username: 'Unknown',
     },
 };
+
+// 一次提交的修订版本
+export interface ChangeRevision {
+    currentRevision: string;
+    revisions: string[];
+}
+
+// 提交的修订版本
+export interface RevisionDetail {
+    ref: string;
+    _number: number;
+    created: string;
+    uploader: UserDetail;
+}
+
+// 一次提交的文件列表和修订版本列表
+export interface FilesAndRevisions {
+    files: string[];
+    revisions: ChangeRevision;
+}
 
 // 列表类别
 export const CATEGORY = {

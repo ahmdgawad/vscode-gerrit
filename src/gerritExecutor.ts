@@ -2,7 +2,7 @@
  * @Author: liupei
  * @Date: 2019-09-24 20:59:24
  * @Last Modified by: liupei
- * @Last Modified time: 2019-10-11 18:47:16
+ * @Last Modified time: 2019-10-12 10:50:12
  */
 
 import * as fse from 'fs-extra';
@@ -15,7 +15,7 @@ import { executeCommand } from './utils/cpUtils';
 import { GerritNode } from './explorer/gerritNode';
 import { useWsl, toWslPath } from './utils/wslUtils';
 import { getWorkspaceConfiguration } from './utils/settingUtils';
-import { Account, UserDetail, DialogOptions, HttpResponse, Change } from './shared';
+import { Account, UserDetail, DialogOptions, HttpResponse, Change, ChangeRevision } from './shared';
 
 const NORMAL_NODE_EXECUTABLE = 'node';
 
@@ -94,15 +94,41 @@ class GerritExecutor implements vscode.Disposable {
         return this.fetch(http.getChanges);
     }
 
-    public async getCurrentRevision(element: GerritNode): Promise<string> {
-        return this.fetch(http.getCurrentRevision, { id: element.id }).then(resp => resp.current_revision);
+    public async getRevisions(element: GerritNode): Promise<ChangeRevision> {
+        return this.fetch(http.getRevisions, { id: element.id }).then(resp => {
+            const { current_revision, revisions } = resp;
+            return {
+                currentRevision: current_revision,
+                revisions: Object.keys(revisions).sort((a, b) => revisions[a]._number - revisions[b]._number),
+            };
+        });
     }
 
-    public async getCurrentRevisionFiles(element: GerritNode, revision: string): Promise<string[]> {
-        return this.fetch(http.getCurrentRevisionFiles, {
+    public async getRevisionFiles(element: GerritNode, revision: string): Promise<string[]> {
+        return this.fetch(http.getRevisionFiles, {
             id: element.id,
             revision: revision,
         }).then(resp => Object.keys(resp));
+    }
+
+    public async getChangeContentDiff(element: GerritNode) {
+        return this.fetch(http.getChangeContentDiff, {
+            id: element.id,
+            file: element.subject,
+            revision: element.currentRevision,
+        }).then(resp => {
+            let content = '';
+            for (const section of resp.content) {
+                const sectionRows = section.ab || section.b;
+                if (!sectionRows) {
+                    continue;
+                }
+                for (const row of sectionRows) {
+                    content += `${row}\n`;
+                }
+            }
+            return content;
+        });
     }
 
     public async fetch(api: Function, data?: any) {

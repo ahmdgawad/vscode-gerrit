@@ -13,6 +13,7 @@
 	"activationEvents": [
 		"onCommand:gerrit.signin",
 		"onCommand:gerrit.signout",
+		"onCommand:gerrit.previewChange",
 		"onView:gerritCodeReview"
 	],
 	"main": "./out/extension.js",
@@ -30,6 +31,10 @@
 					"light": "resources/signout.svg",
 					"dark": "resources/signout.svg"
 				}
+			},
+			{
+				"command": "gerrit.previewChange",
+				"title": "Preview Problem"
 			}
 		],
 		"viewsContainers": {

@@ -7,7 +7,7 @@
 
 import axios from 'axios';
 
-import { Account, RequestConfig, UserDetail } from '../shared';
+import { Account, RequestConfig } from '../shared';
 
 axios.defaults.baseURL = 'http://gerrit.zhenguanyu.com';
 axios.defaults.maxRedirects = 0;
@@ -59,7 +59,7 @@ export async function getChanges(requestConfig: RequestConfig) {
     });
 }
 
-export async function getCurrentRevision(requestConfig: RequestConfig) {
+export async function getRevisions(requestConfig: RequestConfig) {
     const { headers, data } = requestConfig;
 
     return axios({
@@ -70,7 +70,7 @@ export async function getCurrentRevision(requestConfig: RequestConfig) {
     });
 }
 
-export async function getCurrentRevisionFiles(requestConfig: RequestConfig) {
+export async function getRevisionFiles(requestConfig: RequestConfig) {
     const { headers, data } = requestConfig;
 
     return axios({
@@ -78,5 +78,15 @@ export async function getCurrentRevisionFiles(requestConfig: RequestConfig) {
         method: 'GET',
         headers,
         data
+    });
+}
+
+export async function getChangeContentDiff(requestConfig: RequestConfig) {
+    const { headers, data } = requestConfig;
+
+    return axios({
+        url: `/changes/${data.id}/revisions/${data.revision}/files/${encodeURIComponent(data.file)}/diff?${data.base ? `base=${data.base}&` : ``}context=ALL&intraline`,
+        method: 'GET',
+        headers,
     });
 }

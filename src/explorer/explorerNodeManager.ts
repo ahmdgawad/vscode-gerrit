@@ -8,8 +8,8 @@
 import * as vscode from 'vscode';
 
 import { GerritNode } from './gerritNode';
-import { listChanges, listFiles } from '../commands/list';
 import { DEFAULT_CHANGE, CATEGORY, Change } from '../shared';
+import { listChanges, listFilesAndRevisions } from '../commands/list';
 
 class ExplorerNodeManager implements vscode.Disposable {
     private outgoingReviewsExplorerNodeMap: Map<string, GerritNode> = new Map<string, GerritNode>();
@@ -65,11 +65,27 @@ class ExplorerNodeManager implements vscode.Disposable {
         return Array.from(this.recentlyClosedExplorerNodeMap.values());
     }
 
+    public getNodeById(id: string): GerritNode | undefined {
+        const outgoingResult = this.outgoingReviewsExplorerNodeMap.get(id);
+        const incomingResult = this.incomingReviewsExplorerNodeMap.get(id);
+        const recentlyClosedResult = this.recentlyClosedExplorerNodeMap.get(id);
+        if (outgoingResult) {
+            return outgoingResult;
+        }
+        if (incomingResult) {
+            return incomingResult;
+        }
+        return recentlyClosedResult;
+    }
+
     public async getChangeDetail(element: GerritNode): Promise<GerritNode[]> {
-        const files = await listFiles(element);
+        const { files, revisions } = await listFilesAndRevisions(element);
 
         return files.map(file => new GerritNode(Object.assign({}, DEFAULT_CHANGE, {
             subject: file,
+            _number: element.id,
+            revisions: revisions.revisions,
+            currentRevision: revisions.currentRevision,
         }), false, true));
     }
 
