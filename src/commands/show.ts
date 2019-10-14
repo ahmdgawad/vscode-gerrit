@@ -2,19 +2,21 @@
  * @Author: liupei
  * @Date: 2019-10-12 10:59:22
  * @Last Modified by: liupei
- * @Last Modified time: 2019-10-12 11:04:14
+ * @Last Modified time: 2019-10-14 17:25:24
  */
 
 import * as path from 'path';
 import * as fse from 'fs-extra';
 import * as vscode from 'vscode';
 
-import { GerritNode } from '../explorer/gerritNode';
+import { TEXT_KEY } from '../shared';
 import { gerritExecutor } from '../gerritExecutor';
+import { GerritNode } from '../explorer/gerritNode';
+import { createUriString, uriParse } from '../utils/uriUtils';
 import { explorerNodeManager } from '../explorer/explorerNodeManager';
-import { gerritPreviewProvider } from '../webview/gerritPreviewProvider';
+import { textDocumentContentManager } from '../content/textDocumentContentManager';
 
-export async function previewChange(input: GerritNode | vscode.Uri, isSideMode: boolean = false) {
+export async function previewFileDiff(input: GerritNode | vscode.Uri, isSideMode: boolean = false) {
     let node: GerritNode;
     if (input instanceof vscode.Uri) {
         const activeFilePath: string = input.fsPath;
@@ -33,8 +35,13 @@ export async function previewChange(input: GerritNode | vscode.Uri, isSideMode: 
     } else {
         node = input;
     }
-    const content: string = await gerritExecutor.getChangeContentDiff(node);
-    gerritPreviewProvider.show(content, node, isSideMode);
+
+    await textDocumentContentManager.cacheFileDiff(node, new Date().getTime());
+
+    const { subject } = node;
+    const uriDiffA = createUriString(TEXT_KEY.DIFF_A + subject, new Date().getTime());
+    const uriDiffB = createUriString(TEXT_KEY.DIFF_B + subject, new Date().getTime());
+    vscode.commands.executeCommand('vscode.diff', uriParse(uriDiffA), uriParse(uriDiffB), subject);
 
 }
 

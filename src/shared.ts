@@ -2,11 +2,12 @@
  * @Author: liupei
  * @Date: 2019-09-26 14:36:12
  * @Last Modified by: liupei
- * @Last Modified time: 2019-10-11 18:02:04
+ * @Last Modified time: 2019-10-14 17:22:54
  */
 
 import * as vscode from 'vscode';
 
+export const EXTENSION_SCHEME = 'gerrit';
 
 // 登录信息
 export interface Account {
@@ -190,4 +191,14 @@ export interface HttpResponse {
         headers: any;
         baseUrl: string;
     };
+}
+
+
+export const TEXT_KEY = {
+    DIFF_A: 'diffA:',
+    DIFF_B: 'diffB:',
+};
+export interface TextDocumentContent {
+    content: string;
+    expires: number;
 }

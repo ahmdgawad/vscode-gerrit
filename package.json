@@ -13,7 +13,7 @@
 	"activationEvents": [
 		"onCommand:gerrit.signin",
 		"onCommand:gerrit.signout",
-		"onCommand:gerrit.previewChange",
+		"onCommand:gerrit.previewFileDiff",
 		"onView:gerritCodeReview"
 	],
 	"main": "./out/extension.js",
@@ -33,8 +33,8 @@
 				}
 			},
 			{
-				"command": "gerrit.previewChange",
-				"title": "Preview Problem"
+				"command": "gerrit.previewFileDiff",
+				"title": "Preview File Diff"
 			}
 		],
 		"viewsContainers": {

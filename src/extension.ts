@@ -2,17 +2,18 @@
  * @Author: liupei
  * @Date: 2019-09-24 15:00:07
  * @Last Modified by: liupei
- * @Last Modified time: 2019-10-12 11:01:07
+ * @Last Modified time: 2019-10-14 16:50:30
  */
 
 import * as vscode from 'vscode';
 
 import * as show from './commands/show';
-import { DialogType } from './shared';
 import { gerritChannel } from './gerritChannel';
 import { gerritManager } from './gerritManager';
 import { gerritExecutor } from './gerritExecutor';
 import { GerritNode } from './explorer/gerritNode';
+import { EXTENSION_SCHEME, DialogType } from './shared';
+import { gerritTextDocumentContentProvider } from './content/gerritTextDocumentContentProvider';
 import { promptForOpenOutputChannel } from './utils/uiUtils';
 import { explorerNodeManager } from './explorer/explorerNodeManager';
 import { gerritTreeDataprovider } from './explorer/GerritTreeDataProvider';
@@ -39,7 +40,8 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 			vscode.window.createTreeView('gerritCodeReview', { treeDataProvider: gerritTreeDataprovider, showCollapseAll: true }),
 			vscode.commands.registerCommand('gerrit.signin', () => gerritManager.signIn()),
 			vscode.commands.registerCommand('gerrit.signout', () => gerritManager.signOut()),
-			vscode.commands.registerCommand('gerrit.previewChange', (node: GerritNode) => show.previewChange(node)),
+			vscode.commands.registerCommand('gerrit.previewFileDiff', (node: GerritNode) => show.previewFileDiff(node)),
+			vscode.workspace.registerTextDocumentContentProvider(EXTENSION_SCHEME, gerritTextDocumentContentProvider),
 		);
 
 		await gerritManager.getLoginStatus();

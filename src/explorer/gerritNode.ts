@@ -2,7 +2,7 @@
  * @Author: liupei
  * @Date: 2019-09-27 16:46:34
  * @Last Modified by: liupei
- * @Last Modified time: 2019-09-27 20:26:13
+ * @Last Modified time: 2019-10-14 16:50:12
  */
 
 import * as vscode from 'vscode';
@@ -82,8 +82,8 @@ export class GerritNode {
 
     public get previewCommand(): vscode.Command {
         return {
-            title: 'Preview Change',
-            command: 'gerrit.previewChange',
+            title: 'Preview File Diff',
+            command: 'gerrit.previewFileDiff',
             arguments: [this],
         };
     }

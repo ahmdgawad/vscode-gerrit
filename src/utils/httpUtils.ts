@@ -2,7 +2,7 @@
  * @Author: liupei
  * @Date: 2019-09-26 14:43:13
  * @Last Modified by: liupei
- * @Last Modified time: 2019-09-29 16:04:43
+ * @Last Modified time: 2019-10-14 16:49:21
  */
 
 import axios from 'axios';
@@ -81,7 +81,7 @@ export async function getRevisionFiles(requestConfig: RequestConfig) {
     });
 }
 
-export async function getChangeContentDiff(requestConfig: RequestConfig) {
+export async function getFileDiffContent(requestConfig: RequestConfig) {
     const { headers, data } = requestConfig;
 
     return axios({

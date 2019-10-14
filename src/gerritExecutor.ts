@@ -2,7 +2,7 @@
  * @Author: liupei
  * @Date: 2019-09-24 20:59:24
  * @Last Modified by: liupei
- * @Last Modified time: 2019-10-12 10:50:12
+ * @Last Modified time: 2019-10-14 16:49:01
  */
 
 import * as fse from 'fs-extra';
@@ -111,23 +111,29 @@ class GerritExecutor implements vscode.Disposable {
         }).then(resp => Object.keys(resp));
     }
 
-    public async getChangeContentDiff(element: GerritNode) {
-        return this.fetch(http.getChangeContentDiff, {
+    public async getFileDiffContent(element: GerritNode) {
+        return this.fetch(http.getFileDiffContent, {
             id: element.id,
             file: element.subject,
             revision: element.currentRevision,
         }).then(resp => {
-            let content = '';
+            let diffA = '';
+            let diffB = '';
             for (const section of resp.content) {
-                const sectionRows = section.ab || section.b;
-                if (!sectionRows) {
-                    continue;
+                const sectionRowsA = section.ab || section.a;
+                const sectionRowsB = section.ab || section.b;
+                if (sectionRowsA) {
+                    for (const row of sectionRowsA) {
+                        diffA += `${row}\n`;
+                    }
                 }
-                for (const row of sectionRows) {
-                    content += `${row}\n`;
+                if (sectionRowsB) {
+                    for (const row of sectionRowsB) {
+                        diffB += `${row}\n`;
+                    }
                 }
             }
-            return content;
+            return { diffA, diffB };
         });
     }
 
