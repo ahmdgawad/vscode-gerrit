@@ -28,3 +28,7 @@ export function sleep(result: any, time: number = 1): Promise<any> {
         setTimeout(() => resolve(result), time * 1000);
     });
 }
+
+export function getTimestamp(): number {
+    return new Date().getTime();
+}

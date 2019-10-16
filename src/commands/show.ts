@@ -10,7 +10,7 @@ import * as fse from 'fs-extra';
 import * as vscode from 'vscode';
 
 import { TEXT_KEY } from '../shared';
-import { gerritExecutor } from '../gerritExecutor';
+import { getTimestamp } from '../utils/osUtils';
 import { GerritNode } from '../explorer/gerritNode';
 import { createUriString, uriParse } from '../utils/uriUtils';
 import { explorerNodeManager } from '../explorer/explorerNodeManager';
@@ -36,11 +36,11 @@ export async function previewFileDiff(input: GerritNode | vscode.Uri, isSideMode
         node = input;
     }
 
-    await textDocumentContentManager.cacheFileDiff(node, new Date().getTime());
+    await textDocumentContentManager.cacheFileDiff(node, getTimestamp());
 
     const { subject } = node;
-    const uriDiffA = createUriString(TEXT_KEY.DIFF_A + subject, new Date().getTime());
-    const uriDiffB = createUriString(TEXT_KEY.DIFF_B + subject, new Date().getTime());
+    const uriDiffA = createUriString(TEXT_KEY.DIFF_A + subject, getTimestamp());
+    const uriDiffB = createUriString(TEXT_KEY.DIFF_B + subject, getTimestamp());
     vscode.commands.executeCommand('vscode.diff', uriParse(uriDiffA), uriParse(uriDiffB), subject);
 
 }

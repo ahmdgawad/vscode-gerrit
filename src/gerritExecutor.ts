@@ -15,9 +15,7 @@ import { executeCommand } from './utils/cpUtils';
 import { GerritNode } from './explorer/gerritNode';
 import { useWsl, toWslPath } from './utils/wslUtils';
 import { getWorkspaceConfiguration } from './utils/settingUtils';
-import { Account, UserDetail, DialogOptions, HttpResponse, Change, ChangeRevision } from './shared';
-
-const NORMAL_NODE_EXECUTABLE = 'node';
+import { NORMAL_NODE_EXECUTABLE, Account, UserDetail, DialogOptions, HttpResponse, Change, ChangeRevision } from './shared';
 
 class GerritExecutor implements vscode.Disposable {
     private configurationChangeListener: vscode.Disposable;

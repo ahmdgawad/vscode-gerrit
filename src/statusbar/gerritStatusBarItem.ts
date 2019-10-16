@@ -7,7 +7,7 @@
 
 import * as vscode from 'vscode';
 
-import { UserStatus, StatusInfoType, StatusBarInfo } from '../shared';
+import { UserStatus, StatusInfoType } from '../shared';
 
 export class GerritStatusBarItem implements vscode.Disposable {
     private readonly statusBarItem: vscode.StatusBarItem;

@@ -9,6 +9,8 @@ import * as vscode from 'vscode';
 
 export const EXTENSION_SCHEME = 'gerrit';
 
+export const NORMAL_NODE_EXECUTABLE = 'node';
+
 // 登录信息
 export interface Account {
     username: string | undefined;
