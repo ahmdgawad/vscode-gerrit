@@ -5,7 +5,6 @@
  * @Last Modified time: 2019-10-14 17:31:14
  */
 
-import * as fse from 'fs-extra';
 import * as vscode from 'vscode';
 import * as cp from 'child_process';
 
@@ -59,9 +58,6 @@ class GerritExecutor implements vscode.Disposable {
 
     public async meetRequirements(): Promise<boolean> {
         if (this.nodeExecutable !== NORMAL_NODE_EXECUTABLE) {
-            if (!await fse.pathExists(this.nodeExecutable)) {
-                throw new Error(`The Node.js executable does not exist on path ${this.nodeExecutable}`);
-            }
             this.nodeExecutable = `"${this.nodeExecutable}"`;
             if (useWsl()) {
                 this.nodeExecutable = await toWslPath(this.nodeExecutable);

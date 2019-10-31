@@ -6,7 +6,6 @@
  */
 
 import axios from 'axios';
-
 import { Account, RequestConfig } from '../shared';
 
 axios.defaults.baseURL = 'http://gerrit.zhenguanyu.com';

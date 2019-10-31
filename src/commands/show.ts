@@ -6,7 +6,6 @@
  */
 
 import * as path from 'path';
-import * as fse from 'fs-extra';
 import * as vscode from 'vscode';
 
 import { TEXT_KEY } from '../shared';
@@ -47,9 +46,8 @@ export async function previewFileDiff(input: GerritNode | vscode.Uri, isSideMode
 
 
 async function getNodeIdFormFile(fsPath: string): Promise<string> {
-    const fileContent: string = await fse.readFile(fsPath, 'utf-8');
     let id: string = '';
-    const matchResults: RegExpMatchArray | null = fileContent.match(/@lc.+id=(.+?) /);
+    const matchResults: RegExpMatchArray | null = fsPath.match(/@lc.+id=(.+?) /);
     if (matchResults && matchResults.length === 2) {
         id = matchResults[1];
     }
