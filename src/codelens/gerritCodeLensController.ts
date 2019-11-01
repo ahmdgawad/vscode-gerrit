@@ -19,32 +19,32 @@ class GerritCodeLensController implements vscode.Disposable {
         this.registeredProvider = vscode.languages.registerCodeLensProvider({
             scheme: EXTENSION_SCHEME,
         }, this.gerritCodelensProvider);
-        vscode.languages.registerHoverProvider('javascript', {
-            provideHover(document, position, token) {
-                return {
-                    contents: ['Hover Content']
-                };
-            }
-        });
-        vscode.languages.registerHoverProvider('typescript', {
-            provideHover(document, position, token) {
-                return {
-                    contents: ['Hover Content']
-                };
-            }
-        });
-        vscode.languages.registerCodeLensProvider('typescript', {
-            provideCodeLenses(document) {
-                const range: vscode.Range = new vscode.Range(document.lineCount - 1, 0, document.lineCount - 1, 0);
-                return [
-                    new vscode.CodeLens(range, {
-                        title: '3',
-                        command: 'gerrit.signout',
-                        arguments: [document.uri],
-                    })
-                ];
-            }
-        });
+        // vscode.languages.registerHoverProvider('javascript', {
+        //     provideHover(document, position, token) {
+        //         return {
+        //             contents: ['Hover Content']
+        //         };
+        //     }
+        // });
+        // vscode.languages.registerHoverProvider('typescript', {
+        //     provideHover(document, position, token) {
+        //         return {
+        //             contents: ['Hover Content']
+        //         };
+        //     }
+        // });
+        // vscode.languages.registerCodeLensProvider('typescript', {
+        //     provideCodeLenses(document) {
+        //         const range: vscode.Range = new vscode.Range(document.lineCount - 1, 0, document.lineCount - 1, 0);
+        //         return [
+        //             new vscode.CodeLens(range, {
+        //                 title: '3',
+        //                 command: 'gerrit.signout',
+        //                 arguments: [document.uri],
+        //             })
+        //         ];
+        //     }
+        // });
     }
 
     public dispose(): void {

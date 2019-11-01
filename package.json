@@ -2,7 +2,7 @@
 	"name": "vscode-gerrit",
 	"displayName": "vscode-gerrit",
 	"description": "vscode 插件 for gerrit",
-	"version": "0.0.3",
+	"version": "0.0.4",
 	"publisher": "liupei",
 	"engines": {
 		"vscode": "^1.38.0"
