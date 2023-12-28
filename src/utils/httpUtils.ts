@@ -8,7 +8,7 @@
 import axios from 'axios';
 import { Account, RequestConfig } from '../shared';
 
-axios.defaults.baseURL = 'http://gerrit.zhenguanyu.com';
+axios.defaults.baseURL = 'https://gerrit.ericsson.se';
 axios.defaults.maxRedirects = 0;
 
 export async function getGerritAccount(account: Account): Promise<null> {
